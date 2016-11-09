@@ -4,7 +4,7 @@
     {% block head %}
     <title>Markovify the 2016 Presidential Debates{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
+    <meta name="description" content="Markovify the 2016 Presidential Debates">
     <meta name="keywords" content="">
     <meta name="author" content="">
     <meta charset="utf-8">
@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='ico/favicon.ico') }}">
     {% endblock %}
   </head>
+
   <body>
     {% block navbar %}
     <div class="navbar navbar-static-top navbar-default">
@@ -22,21 +23,11 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/">Markovify the 2016 Presidential Debate</a>
-        <div class="nav-collapse">
-          {% block navbar_right %}
-          <ul class="nav navbar-nav pull-right">
-            {% if not session.logged_in %}
-              <li><a href="#">Login or Signup</a></li>
-            {% else %}
-              <li><a href="#">Logout</a></li>
-            {% endif %}
-          </ul>
-          {% endblock %}
-        </div><!--/.nav-collapse -->
+        <a class="navbar-brand" href="/">Markovify the 2016 Presidential Debates</a>
       </div>
     </div>
     {% endblock %}
+
     <div class="container page">
         <div class="content">
           {% block content %}
@@ -45,7 +36,7 @@
         <hr>
         {% block footer %}
         <footer class="footer">
-            <p>&copy; Markovify the 2016 Presidential Debate</p>
+            <p>&copy; Markovify the 2016 Presidential Debates</p>
         </footer>
         {% endblock %}
     </div>

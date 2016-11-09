@@ -1,6 +1,10 @@
 import os
 from flask import Flask, render_template, send_from_directory
 
+import sys
+sys.path.append("/assets")
+
+import markov_debate
 
 # initialization
 app = Flask(__name__)
@@ -11,10 +15,16 @@ app.config.update(
 
 # controllers
 @app.route("/")
-def hello():
-	return "Hello to Python!"
+def my_form():
+	return render_template("my-form.html")
 
-@app.route('/static/ico/favicon.ico')
+@app.route('/', methods=['POST'])
+def my_form_post():
+    text = request.form['text']
+    num_lines = int(text)
+    return markov_debate.banter(num_lines)
+
+@app.route('/')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
 
