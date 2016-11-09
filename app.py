@@ -13,7 +13,7 @@ app.config.update(
 # controllers
 @app.route("/")
 def hello():
-	return "Hello from Python!"
+	return "Hello to Python!"
 
 @app.route('/favicon.ico')
 def favicon():
