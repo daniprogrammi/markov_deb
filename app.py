@@ -9,13 +9,12 @@ app.config.update(
 	DEBUG = True,
 )
 
-
 # controllers
 @app.route("/")
 def hello():
 	return "Hello to Python!"
 
-@app.route('/favicon.ico')
+@app.route('/static/ico/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
 
@@ -23,7 +22,7 @@ def favicon():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-@app.route("/")
+@app.route("/templates")
 def index():
     return render_template('index.html')
 
