@@ -1,8 +1,10 @@
 import os
-from flask import Flask, render_template, send_from_directory
+#import requests
+from flask import Flask, render_template, send_from_directory, request
 
 import sys
-sys.path.append("/assets")
+print sys.path
+sys.path.append("./assets/")
 
 import markov_debate
 
@@ -16,17 +18,19 @@ app.config.update(
 # controllers
 @app.route("/")
 def my_form():
-	return render_template("my-form.html")
+	return render_template("index.html")
 
-@app.route('/', methods=['POST'])
-def my_form_post():
-    text = request.form['text']
-    num_lines = int(text)
-    return markov_debate.banter(num_lines)
+@app.route('/generate_banter', methods=['POST'])
+def generate_banter():
+	print(request.args)
+	num_lines = request.args.get("lines", default=3, type=int)
+	banter = str(markov_debate.banter(num_lines))
+	return render_template('result.html', result=banter)
 
-@app.route('/')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
+
+#@app.route('/favicon')
+#def favicon():
+#    return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
 
 @app.errorhandler(404)
 def page_not_found(e):

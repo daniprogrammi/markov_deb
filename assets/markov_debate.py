@@ -42,33 +42,38 @@ markov_trump = markovify.Text(trump_text)
 
 def generate_banter(short_sentence = True, sentence_size = 140):
 
+    return_banter = ""
+
     if short_sentence:
         short_clinton = markov_clinton.make_short_sentence(sentence_size)
         short_trump = markov_trump.make_short_sentence(sentence_size)
-        print ("Clinton: {0}").format(short_clinton)
-        print("Trump: {0}").format(short_trump)
 
-        print("\n")
+        return_banter += "Clinton: " + short_clinton + "<br>" + "Trump: " + short_trump + "<br>"
+
     else:
         clinton = markov_clinton.make_sentence()
         trump = markov_trump.make_sentence()
 
-        print ("Clinton: {0}").format(clinton)
-        print("Trump: {0}").format(trump)
+        return_banter += "Clinton: " + short_clinton + "<br>" + "Trump: " + short_trump + "<br>"
 
-        print ("\n")
+    return return_banter
 
 def banter(num_lines, short_sentence = True, sentence_size = 140, **kwargs):
     topics = kwargs.get('topics')
+    return_banter = ""
+
     if topics:
         for topic in topics:
             print ("Round Topic: {0}").format(topic)
-
             for i in range(num_lines):
-                generate_banter(short_sentence, sentence_size)
+                banter = str(generate_banter(short_sentence, sentence_size))
+                return_banter += banter + "<br>"
     else:
         for i in range(num_lines):
-                generate_banter(short_sentence, sentence_size)
+                banter = str(generate_banter(short_sentence, sentence_size))
+                return_banter += banter
+
+    return ("<br>" + return_banter)
 
 
 #""" MODULE CHANGE

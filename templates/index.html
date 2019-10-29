@@ -2,9 +2,9 @@
 {% block title %} - Home{% endblock %}
 
 {% block content %}
-<form action="/my_form_post">
+<form method="POST" action="/generate_banter">
   Number of lines for this Debate:
-  <input type="number" name="lines" min="0" max="50" step="1" value="3">
-  <input type="submit">
+  <input type="number" name="lines" min="0" max="50" step="1" value="3"/>
+  <input type="submit"/>
 </form>
 {% endblock %}
