@@ -18,6 +18,7 @@ app.config.update(
 # controllers
 @app.route("/")
 def my_form():
+	print("Home")
 	return render_template("index.html")
 
 @app.route('/generate_banter', methods=['POST'])
@@ -28,9 +29,9 @@ def generate_banter():
 	return render_template('result.html', result=banter)
 
 
-#@app.route('/favicon')
-#def favicon():
-#    return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
+@app.route('/favicon')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
 
 @app.errorhandler(404)
 def page_not_found(e):
