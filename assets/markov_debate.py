@@ -1,5 +1,5 @@
 
-# coding: utf-8
+# coding: latin-1
 
 # In[1]:
 
@@ -8,7 +8,7 @@ import pandas as pd
 import nltk
 
 # Extract text from csv; put into string
-debate_csv = pd.read_csv("./assets/debate.csv")
+debate_csv = pd.read_csv("./assets/debate.csv", encoding='latin-1')
 debate_clinton = debate_csv[debate_csv["Speaker"] == "Clinton"]["Text"]
 debate_trump = debate_csv[debate_csv["Speaker"] == "Trump"]["Text"]
 

@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, send_from_directory, request
 
 import sys
-print sys.path
+print(sys.path)
 sys.path.append("./assets/")
 
 import markov_debate
