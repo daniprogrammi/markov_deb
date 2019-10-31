@@ -6,6 +6,7 @@
 import markovify
 import pandas as pd
 import nltk
+nltk.data.path.append('./nltk_data/') # Should look for any missing corpus under this path, and hopefully not crash
 
 # Extract text from csv; put into string
 debate_csv = pd.read_csv("./assets/debate.csv", encoding='latin-1')
