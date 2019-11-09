@@ -36,7 +36,7 @@ class Debate:
         self.speaker1 = speaker1
         self.speaker2 = speaker2
 
-        self.debate_csv = pd.read_csv("./assets/debate.csv")
+        self.debate_csv = pd.read_csv("./assets/debate.csv", encoding='latin-1')
 
         # Model created on initialization to speed up calling generate banter
         self.speaker1_model = self._markovify_speaker(speaker1)
@@ -120,7 +120,7 @@ def main():
 
     while True:
         print("Type e to exit")
-        num_lines_in_banter = raw_input("How many lines of banter should be generated?: ")
+        num_lines_in_banter = input("How many lines of banter should be generated?: ")
 
         if str(num_lines_in_banter) == 'e':
             break

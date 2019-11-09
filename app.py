@@ -1,10 +1,6 @@
-import os
-#import requests
+import os,sys
 from flask import Flask, render_template, send_from_directory, request
-
-import sys
-sys.path.append("./assets/")
-
+sys.path.append('./assets/')
 from markov_debate import Debate
 
 # initialization
@@ -15,33 +11,26 @@ app.config.update(DEBUG=True)
 #initialize a debate to speed up generate_banter
 a_debate = Debate("Clinton", "Trump")
 
+
 # controllers
-@app.route("/")
+@app.route("/", methods=['GET'])
 def my_form():
     print("Home")
     return render_template("index.html")
 
 
-@app.route('/generate_banter', methods=['GET', 'POST'])
+@app.route('/generate_banter', methods=['POST'])
 def generate_banter():
-    print("Request: ".format(request.args.get('lines')))
-    num_lines = request.args.get("lines", default=3, type=int)
+    num_lines = request.form.get("lines", default=3, type=int)
     banter = a_debate.banter(num_lines)
-    banter = str(banter)
-    return render_template('result.html', result=banter)
+    banter_array = banter.split("\n")
+    return render_template('result.html', result=banter_array)
 
 
-@app.route('/favicon')
-def favicon():
-    return send_from_directory(os.path.join(app.root_path, 'static'), 'ico/favicon.ico')
-
+# Not used right now
 @app.errorhandler(404)
-def page_not_found(e):
+def page_not_found():
     return render_template('404.html'), 404
-
-@app.route("/templates")
-def index():
-    return render_template('index.html')
 
 
 # launch

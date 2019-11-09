@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 {% block title %} - Home {% endblock %}
 
+
 {% block content %}
 {% if result %}
-    Your debate:
-     {{ result }}
+    Your debate:<br /><br/>
+    {% for line in result %}
+        {{ line }}<br />
+    {% endfor %}
 {% else %}
-    No banter requested
+    No banter to display :(
 {% endif %}
 {% endblock %}
