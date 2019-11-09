@@ -1,102 +1,130 @@
+### Danielle Williams
+### Exploring text generation using markov chains
+### You can read out the accompanying blog post at danicodes.github.io
+### This code is live at https://markov-app.herokuapp.com/
 
-# coding: latin-1
-
-# In[1]:
-
+import sys
 import markovify
 import pandas as pd
 import nltk
-nltk.data.path.append('./nltk_data/') # Should look for any missing corpus under this path, and hopefully not crash
+
+nltk.data.path.append('./nltk_data/') # Resolving Heroku issue, should look for any missing corpus under this path, and hopefully not crash
+
 
 # Extract text from csv; put into string
-debate_csv = pd.read_csv("./assets/debate.csv", encoding='latin-1')
-debate_clinton = debate_csv[debate_csv["Speaker"] == "Clinton"]["Text"]
-debate_trump = debate_csv[debate_csv["Speaker"] == "Trump"]["Text"]
 
-clinton_text = ""
-for line in debate_clinton:
-    clinton_text += line
+class Debate:
+    """
 
-trump_text = ""
-for line in debate_trump:
-    trump_text += line
+    Generate debates between two speakers
 
-# Create markov chains from the texts
-markov_clinton = markovify.Text(clinton_text)
-markov_trump = markovify.Text(trump_text)
+    """
+    def __init__(self, speaker1, speaker2):
+        """
+        Initialize a debate
 
+        :param speaker1: str, name of speaker
+        :param speaker2: str, name of speaker
 
-# If topics are present:
-#     For each topic generate sentence based on the topic
-#     Generate rebutal based on topic/s from previous
-#     Follow general sentence flow
-# If topics are present:
-#     num_lines will be number of lines of debate for EACH topic
-#
-# GENERAL for sentence flow -
-# Extract nouns/get rid of closed-class words from first generated sentence; Generate next sentence (rebuttal) based on nouns/topics from previous; 16
-#
-#
-#
+        """
+        self.speaker1 = speaker1
+        self.speaker2 = speaker2
 
-# In[4]:
+        self.debate_csv = pd.read_csv("./assets/debate.csv")
 
-def generate_banter(short_sentence = True, sentence_size = 140):
+        # Model created on initialization to speed up calling generate banter
+        self.speaker1_model = self._markovify_speaker(speaker1)
+        self.speaker2_model = self._markovify_speaker(speaker2)
 
-    return_banter = ""
+    def _markovify_speaker(self, speaker):
+        """
+        extract a speaker's text from debate.csv and return a markovified model
+        :param speaker: str, name of speaker as it appears in csv asset
+        :return: markofivy model
+        """
+        speaker_corpus = self.debate_csv[self.debate_csv["Speaker"] == speaker]["Text"]
+        speaker_string = " ".join(speaker_corpus)
+        markovify_speaker_model = markovify.Text(speaker_string)
 
-    if short_sentence:
-        short_clinton = markov_clinton.make_short_sentence(sentence_size)
-        short_trump = markov_trump.make_short_sentence(sentence_size)
+        return markovify_speaker_model
 
-        return_banter += "Clinton: " + short_clinton + "<br>" + "Trump: " + short_trump + "<br>"
+    def generate_banter(self, short_sentence=True, sentence_size=140):
+        """
+        generate a line between each speaker
 
-    else:
-        clinton = markov_clinton.make_sentence()
-        trump = markov_trump.make_sentence()
+        :param short_sentence: bool, default True, if true will opt to make short sentences
+        :param sentence_size: int, maximum number characters in a sentence
+        :return: str, banter
+        """
+        return_banter = ""
 
-        return_banter += "Clinton: " + short_clinton + "<br>" + "Trump: " + short_trump + "<br>"
+        if short_sentence:
+            short_speaker1 = self.speaker1_model.make_short_sentence(sentence_size)
+            short_speaker2 = self.speaker2_model.make_short_sentence(sentence_size)
 
-    return return_banter
+            return_banter += "{}: {} \n".format(self.speaker1, short_speaker1) + \
+                             "{}: {} \n".format(self.speaker2, short_speaker2)
 
-def banter(num_lines, short_sentence = True, sentence_size = 140, **kwargs):
-    topics = kwargs.get('topics')
-    return_banter = ""
+        else:
+            reg_speaker1 = self.speaker1_model.make_sentence()
+            reg_speaker2 = self.speaker2_model.make_sentence()
 
-    if topics:
-        for topic in topics:
-            print ("Round Topic: {0}").format(topic)
+            return_banter += "{}: {} \n".format(self.speaker1, reg_speaker1) + \
+                             "{}: {} \n".format(self.speaker2, reg_speaker2)
+
+        return return_banter
+
+    def banter(self, num_lines, short_sentence=True, sentence_size=140, **kwargs):
+        """
+        banter generates a series of lines between two speakers by calling generate_banter for
+        <num_lines> times
+
+        :param num_lines: int, number of statements to generate for each speaker
+        :param short_sentence: bool, default True, if true will opt to make short sentences
+        :param sentence_size: int, maximum number characters in a sentence
+        :return str, banter
+
+        Todo: Generate rebuttal based on topic/s from previous sentence for semblance of flow
+        Extract nouns/get rid of closed-class words from first generated sentence;
+        Generate next sentence (rebuttal) based on nouns/topics from previous;
+        """
+        topics = kwargs.get('topics')
+
+        def create_banter(num_lines, short_sentence, sentence_size):
+            return_banter = ""
             for i in range(num_lines):
-                banter = str(generate_banter(short_sentence, sentence_size))
-                return_banter += banter + "<br>"
-    else:
-        for i in range(num_lines):
-                banter = str(generate_banter(short_sentence, sentence_size))
-                return_banter += banter
+                banter = str(self.generate_banter(short_sentence, sentence_size))
+                return_banter += banter + "\n"
 
-    return ("<br>" + return_banter)
+            return return_banter
 
+        # TODO: Edit banter to accept topics
+        if topics:
+            for topic in topics:
+                print("Round Topic: {}".format(topic))
+                return create_banter(num_lines, short_sentence, sentence_size)
 
-#""" MODULE CHANGE
-#def make_sentence_including(words):
-
-#"""
-
+        else:
+            return create_banter(num_lines, short_sentence, sentence_size)
 
 
+# Example usage
+def main():
+    new_debate = Debate("Clinton", "Trump")
 
-# In[6]:
+    while True:
+        print("Type e to exit")
+        num_lines_in_banter = raw_input("How many lines of banter should be generated?: ")
 
-#banter(1, topics = ["Race", "Grace", "Mace"])
+        if str(num_lines_in_banter) == 'e':
+            break
 
-sentence = markov_clinton.make_sentence()
-test = nltk.word_tokenize(sentence)
+        print("\n\n Your Debate: \n")
+        print(new_debate.banter(int(num_lines_in_banter)))
 
-#nltk.pos_tag(sentence)
-
-#nltk.word_tokenize() nltk.tokenize()
-
+    return
 
 
-
-# In[ ]:
+if __name__ == "__main__":
+    main()
+    sys.exit(0)

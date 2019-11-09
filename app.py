@@ -3,30 +3,32 @@ import os
 from flask import Flask, render_template, send_from_directory, request
 
 import sys
-print(sys.path)
 sys.path.append("./assets/")
 
-import markov_debate
+from markov_debate import Debate
 
 # initialization
 app = Flask(__name__)
 
-app.config.update(
-	DEBUG = True,
-)
+app.config.update(DEBUG=True)
+
+#initialize a debate to speed up generate_banter
+a_debate = Debate("Clinton", "Trump")
 
 # controllers
 @app.route("/")
 def my_form():
-	print("Home")
-	return render_template("index.html")
+    print("Home")
+    return render_template("index.html")
 
-@app.route('/generate_banter', methods=['POST'])
+
+@app.route('/generate_banter', methods=['GET', 'POST'])
 def generate_banter():
-	print(request.args)
-	num_lines = request.args.get("lines", default=3, type=int)
-	banter = str(markov_debate.banter(num_lines))
-	return render_template('result.html', result=banter)
+    print("Request: ".format(request.args.get('lines')))
+    num_lines = request.args.get("lines", default=3, type=int)
+    banter = a_debate.banter(num_lines)
+    banter = str(banter)
+    return render_template('result.html', result=banter)
 
 
 @app.route('/favicon')
@@ -41,8 +43,8 @@ def page_not_found(e):
 def index():
     return render_template('index.html')
 
-# launch
 
+# launch
 if __name__ == "__main__":
-	port = int(os.environ.get("PORT", 5000))
-	app.run(host='0.0.0.0', port=port)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
