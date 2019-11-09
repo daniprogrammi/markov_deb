@@ -1,7 +1,13 @@
-### Danielle Williams
-### Exploring text generation using markov chains
-### You can read out the accompanying blog post at danicodes.github.io
-### This code is live at https://markov-app.herokuapp.com/
+####################################################################
+####################################################################
+####################################################################
+# Danielle Williams -- Exploring text generation using markov chains
+# * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ * #
+# You can read the accompanying blog post at danicodes.github.io   #
+# This code is live at https://markov-app.herokuapp.com/           #
+####################################################################
+####################################################################
+####################################################################
 
 import sys
 import markovify
